@@ -753,11 +753,40 @@ def searchMovieInfo():
 
     return render_template('searchmovieinfo.html', movies=res)
 
+#Revenue movie route
+@app.route('/getMovieInfoForRevenue',methods=['GET'])
+def movieListForRevenue():
+    res = runQuery("SELECT * FROM movies")
+    return render_template('MovieForRevenue.html', movies=res)
 
-
-
-
-
+@app.route('/showMovieRevenue', methods=['POST'])
+def showMovieRevenue():
+    movieID = request.form['movieID']
+    show_res = runQuery(
+        "SELECT show_ID FROM shows WHERE movie_ID="+str(movieID)
+    )
+    if show_res == []:
+        print(1)
+        return '<h5>This Movie Has No Show Yet</h5>'
+    else:
+        print(2)
+        showID = []
+        totalRevenue = 0
+        for i in show_res:
+            ticket_res = runQuery(
+            "SELECT ticket_no,seat_no FROM new_booked_tickets WHERE show_id = "+str(i[0])+" order by seat_no")
+            if ticket_res == []:
+                return '<h5>This Movie Has No Booked Ticket Yet</h5>'
+            else:    
+                revenue_res = runQuery(
+                "SELECT price FROM shows NATURAL JOIN price_listing WHERE show_id = "+str(i[0]))
+                price = int(revenue_res[0][0])
+                for i in ticket_res:
+                    if i[1]>1000:
+                        totalRevenue = totalRevenue + price * 1.5
+                    else:
+                        totalRevenue = totalRevenue + price
+    return '<h5>Total Revenue of this movie :'+str(totalRevenue)+'</h5>'
 
 
 

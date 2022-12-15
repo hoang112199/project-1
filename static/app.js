@@ -944,3 +944,29 @@ function searchMovieInfo() {
 	});
 
 }
+
+//Revenue function
+function showRevenueMovie(){
+	$.ajax({
+		type: 'GET',
+		url: '/getMovieInfoForRevenue',
+		success: function (response) {
+			$('#manager-dynamic-2').html(response);
+		}
+	});
+}
+
+function getMovieRevenueFunction(_movieID){
+	movieID = _movieID;
+	$('#manager-dynamic-2 button').prop('disabled', true);
+	$.ajax({
+		type: 'POST',
+		url: '/showMovieRevenue',
+		data: {
+			'movieID': movieID
+		},
+		success: function (response) {
+			$('#manager-dynamic-3').html(response);
+		}
+	});
+}

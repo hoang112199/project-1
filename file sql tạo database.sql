@@ -89,16 +89,16 @@ begin
 set curdate=curdate();
 
 DELETE FROM shows 
-WHERE datediff(Date,curdate)<0;
+WHERE datediff(Date,curdate)<-7;
 
 DELETE FROM shows 
 WHERE movie_id IN 
 (SELECT movie_id 
 FROM movies
-WHERE datediff(show_end,curdate)<0);
+WHERE datediff(show_end,curdate)<-7);
 
 DELETE FROM movies 
-WHERE datediff(show_end,curdate)<0;
+WHERE datediff(show_end,curdate)<-7;
 
 end; //
 
@@ -109,5 +109,7 @@ delimiter ;
 -- thêm vào để chạy staff (xóa sau)
 create table staff_info( staff_id int primary key, staff_name varchar(40), date_of_birth date, ID_card int, address varchar(60), position varchar(30));
 -- chỉ cần viết thêm như sau là có file sql mới(ví dụ tạo bảng nhân viên và khách hàng )
+create table new_booked_tickets_1 (ticket_no int, show_id int, seat_no int,ma_nhan_vien int, primary key(ticket_no,show_id,ma_nhan_vien), 
+	foreign key(show_id) references shows(show_id) on delete cascade, foreign key(ma_nhan_vien) references nhan_vien(ma_nhan_vien) on delete cascade);
 create table nhan_vien (ma_nhan_vien int primary key, ten_nhan_vien varchar(40), ngay_sinh date, gioi_tinh varchar(10), can_cuoc_cong_dan int, chuc_vu varchar(20), so_dien_thoai int, email varchar(40), dia_chi varchar(50), luong varchar(20));
 create table khach_hang (ma_khach_hang int primary key, ten_khach_hang varchar(40), ngay_sinh date, gioi_tinh varchar(10), can_cuoc_cong_dan int,  so_dien_thoai int, email varchar(40), loai_khach_hang varchar(20));
